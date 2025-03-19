@@ -2,17 +2,18 @@ package com.example.iprwcgundam_webshop.controller;
 
 import com.example.iprwcgundam_webshop.dao.CartDAO;
 import com.example.iprwcgundam_webshop.dao.ProductDAO;
+import com.example.iprwcgundam_webshop.dto.RemoveItemRequestDTO;
+import com.example.iprwcgundam_webshop.dto.UpdateItemQuantityRequestDTO;
 import com.example.iprwcgundam_webshop.model.Cart;
 import com.example.iprwcgundam_webshop.model.CartItem;
 import com.example.iprwcgundam_webshop.model.Product;
+import com.example.iprwcgundam_webshop.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ import java.util.UUID;
 public class CartController {
     private final CartDAO cartDAO;
     private final ProductDAO productDAO;
+    private final CartRepository cartRepository;
 
     @PostMapping(value = "/order/{userId}")
     public ResponseEntity<Map<String, String>> placeOrder(@PathVariable UUID userId) {
@@ -64,6 +66,28 @@ public class CartController {
         return ResponseEntity.ok(updatedCart);
     }
 
+    @PutMapping(value = "/update-quantity/{userId}")
+    public ResponseEntity<Cart> updateCartItemQuantity(@PathVariable UUID userId, @RequestBody UpdateItemQuantityRequestDTO request) {
+        Cart cart = cartDAO.getCartByUserId(userId);
+        if (cart == null) {
+            return ResponseEntity.notFound().build();
+        }
+        cartRepository.updateCartItemQuantity(request.getCartItemId(), request.getQuantity());
+        Cart updatedCart = cartDAO.getCartByUserId(userId);
+        return ResponseEntity.ok(updatedCart);
+    }
+
+    @PostMapping(value = "/remove/{userId}")
+    public ResponseEntity<Cart> removeItemFromCart(@PathVariable UUID userId, @RequestBody RemoveItemRequestDTO request) {
+        Cart cart = cartDAO.getCartByUserId(userId);
+        if (cart == null) {
+            return ResponseEntity.notFound().build();
+        }
+        cartRepository.deleteCartItemById(request.getCartItemId());
+        Cart updatedCart = cartDAO.getCartByUserId(userId);
+        return ResponseEntity.ok(updatedCart);
+    }
+
     @GetMapping(value = "/{userId}")
     public ResponseEntity<Cart> getCartByUserId(@PathVariable UUID userId) {
         Cart cart = cartDAO.getCartByUserId(userId);
@@ -72,4 +96,6 @@ public class CartController {
         }
         return ResponseEntity.ok(cart);
     }
+
+
 }

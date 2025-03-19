@@ -36,6 +36,10 @@ public class ProductDAO extends Product {
         productRepository.deleteById(id);
     }
 
+    public void deleteAll() {
+        productRepository.deleteAll();
+    }
+
     public Product updateById(UUID id, Product updatedProduct) {
         if (productRepository.existsById(id)) {
             updatedProduct.setId(id);

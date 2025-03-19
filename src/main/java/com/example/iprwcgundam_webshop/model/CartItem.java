@@ -25,9 +25,6 @@ public class CartItem {
     @JsonIgnore
     private Cart cart;
 
-//    @Column(name = "grade_id")
-//    private UUID gradeId;
-
     @Column(name = "product_id", nullable = false)
     private UUID productId;
 
