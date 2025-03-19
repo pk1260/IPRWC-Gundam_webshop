@@ -59,24 +59,15 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/api/v1/auth/**").permitAll()
-                                .requestMatchers("/api/v1/auth/login").permitAll()
-                                .requestMatchers("api/v1/products").permitAll()
-                                .requestMatchers("api/v1/products/**").permitAll()
-                                .requestMatchers("api/v1/products/details/**").permitAll()
-                                .requestMatchers("api/v1/cart/**").permitAll()
-                                .requestMatchers("api/v1/cart/update-quantity/**{").permitAll()
-                                .requestMatchers("api/v1/cart/save/**").permitAll()
-                                .requestMatchers("api/v1/cart/remove/**").permitAll()
-                                .requestMatchers("api/v1/cart/save/order/**").permitAll()
-                                .requestMatchers("api/v1/user").permitAll()
-                                .requestMatchers("api/v1/user/**").permitAll()
-                                .anyRequest().authenticated()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/products/**").permitAll()
+                        .requestMatchers("/api/v1/cart/**").permitAll()
+                        .requestMatchers("/api/v1/user/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-
                 .build();
     }
 }
